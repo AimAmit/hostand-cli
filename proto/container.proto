@@ -1,0 +1,29 @@
+syntax = "proto3";
+package proto;
+option go_package="github.com/aimamit/hostand-cli/proto";
+
+service DockerService {
+  rpc FileUpload(stream FileRequest) returns (FileResponse) {};
+  rpc ContainerCreate(AppVersion) returns (FileResponse) {};
+  rpc GetIPVersion(AppVersion) returns (IPResponse) {};
+}
+
+message AppVersion{
+  string domain=1;
+  string version=2;
+}
+
+message FileRequest {
+  oneof data{
+    AppVersion appVersion=1;
+    bytes chunk=2;
+  }
+}
+
+message FileResponse {
+  string error=1;
+}
+
+message IPResponse {
+  string ip=1;
+}

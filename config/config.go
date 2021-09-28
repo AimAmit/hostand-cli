@@ -1,0 +1,41 @@
+package config
+
+import (
+	"fmt"
+	"os"
+	"os/user"
+	"path"
+
+	"github.com/spf13/viper"
+)
+
+func getUserHomeDir() string {
+	usr, err := user.Current()
+	if err != nil {
+		fmt.Println("Can't get your home directory.")
+		os.Exit(1)
+	}
+
+	return usr.HomeDir
+}
+
+func getConfigPath() string {
+	return path.Join(getUserHomeDir(), ".hostand.json")
+}
+
+//Init sets the config files location and attempts to read it in.
+func Init() {
+	if _, err := os.Stat(getConfigPath()); os.IsNotExist(err) {
+		err = os.WriteFile(getConfigPath(), []byte("{}"), 0600)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	viper.SetConfigFile(getConfigPath())
+	viper.SetDefault("author", "contacttoamit00@gmail.com")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+}
